@@ -256,9 +256,8 @@ export ENABLE_OPENMC="true"
 # $PETSC_DIR/$PETSC_ARCH tree that the Makefile would otherwise assume.
 export HDF5_ROOT="${CONDA_PREFIX}"
 
-# macOS ignores LD_LIBRARY_PATH — the dynamic loader reads DYLD_* instead.
-# We export both so the same env file works if it is ever reused on Linux.
-export DYLD_LIBRARY_PATH="${CONDA_PREFIX}/lib${DYLD_LIBRARY_PATH:+:${DYLD_LIBRARY_PATH}}"
+# Kept for portability when this environment is used on Linux. Do not set
+# DYLD_LIBRARY_PATH globally on macOS; it can break non-Conda executables.
 export LD_LIBRARY_PATH="${CONDA_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
 
 # Used by MOOSE/libMesh sub-builds if they are ever triggered.
@@ -275,7 +274,7 @@ else
 fi
 
 ok "HDF5_ROOT=${HDF5_ROOT}"
-ok "DYLD_LIBRARY_PATH=${CONDA_PREFIX}/lib:..."
+ok "LD_LIBRARY_PATH=${CONDA_PREFIX}/lib:..."
 
 # ---------------------------------------------------------------------------
 # 5. Compile
@@ -347,13 +346,21 @@ ENV_FILE="${CARDINAL_DIR}/cardinal_env.sh"
   echo ""
   echo "conda activate ${CONDA_ENV}"
   echo ""
-  echo "export CARDINAL_DIR=\"${CARDINAL_DIR}\""
+  echo 'if [ -n "${BASH_VERSION:-}" ]; then'
+  echo '  _cardinal_env_file="${BASH_SOURCE[0]}"'
+  echo 'elif [ -n "${ZSH_VERSION:-}" ]; then'
+  echo '  _cardinal_env_file="${(%):-%x}"'
+  echo 'else'
+  echo '  _cardinal_env_file="$0"'
+  echo 'fi'
+  echo 'export CARDINAL_DIR="$(cd -- "$(dirname -- "${_cardinal_env_file}")" && pwd)"'
+  echo 'unset _cardinal_env_file'
   echo "export ENABLE_NEK=${ENABLE_NEK}"
   echo "export ENABLE_OPENMC=true"
   echo "export HDF5_ROOT=\"\${CONDA_PREFIX}\""
   echo ""
-  echo "# macOS uses DYLD_LIBRARY_PATH; LD_LIBRARY_PATH is kept for portability."
-  echo "export DYLD_LIBRARY_PATH=\"\${CONDA_PREFIX}/lib\${DYLD_LIBRARY_PATH:+:\${DYLD_LIBRARY_PATH}}\""
+  echo "# Kept for portability when this environment is used on Linux. Do not set"
+  echo "# DYLD_LIBRARY_PATH globally on macOS; it can break non-Conda executables."
   echo "export LD_LIBRARY_PATH=\"\${CONDA_PREFIX}/lib\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}\""
   echo ""
   echo "export MOOSE_JOBS=${JOBS}"
