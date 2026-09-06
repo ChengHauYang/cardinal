@@ -1,0 +1,11 @@
+[Tests]
+  [ns_ht]
+    type = RunApp
+    input = main.i
+    capabilities = 'nekrs'
+    min_parallel = 2
+    max_parallel = 2
+    max_time = 300
+    requirement = 'The system shall exchange temperature and velocity fields during a coupled heat-transfer and Navier-Stokes transient.'
+  []
+[]

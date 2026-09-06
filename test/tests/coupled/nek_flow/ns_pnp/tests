@@ -1,0 +1,11 @@
+[Tests]
+  [ns_pnp]
+    type = RunApp
+    input = main.i
+    capabilities = 'nekrs'
+    min_parallel = 2
+    max_parallel = 2
+    max_time = 300
+    requirement = 'The system shall exchange electric body force and velocity fields during a coupled Poisson-Nernst-Planck and Navier-Stokes transient.'
+  []
+[]

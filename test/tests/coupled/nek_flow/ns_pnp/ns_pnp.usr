@@ -1,0 +1,15 @@
+c-----------------------------------------------------------------------
+      subroutine usrdat2
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer ntot
+
+      ntot=lx1*ly1*lz1*nelt
+      call cmult(xm1,10.0,ntot)
+      call cmult(ym1,5.0,ntot)
+      call cmult(zm1,13.333333333333333,ntot)
+
+      return
+      end
+c-----------------------------------------------------------------------

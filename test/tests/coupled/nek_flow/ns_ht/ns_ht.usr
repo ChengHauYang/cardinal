@@ -1,0 +1,27 @@
+c-----------------------------------------------------------------------
+      subroutine usrdat2
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer iel,ifc,ntot
+
+      ntot=lx1*ly1*lz1*nelt
+      call cmult(xm1,10.0,ntot)
+      call cmult(ym1,5.0,ntot)
+      call cmult(zm1,13.333333333333333,ntot)
+
+      do iel=1,nelv
+        do ifc=1,2*ndim
+          if (cbc(ifc,iel,1).eq.'W  ') then
+            if (ifc.eq.5) then
+              boundaryID(ifc,iel)=1 ! bottom wall
+            elseif (ifc.eq.6) then
+              boundaryID(ifc,iel)=2 ! top wall
+            endif
+          endif
+        enddo
+      enddo
+
+      return
+      end
+c-----------------------------------------------------------------------

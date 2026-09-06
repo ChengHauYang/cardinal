@@ -1,0 +1,43 @@
+static constexpr dfloat Ra = 1.7e5;
+static constexpr dfloat Pr = 0.7;
+
+#ifdef __okl__
+
+// This case uses only NekRS-provided device operations.
+
+#endif
+
+void buoyancy(double time)
+{
+  auto o_vertical_force = nrs->fluid->o_EXT + 2 * nrs->fluid->fieldOffset;
+
+  // Cardinal stores the MOOSE temperature in usrwrk slot zero.
+  platform->linAlg->axpby(nrs->meshV->Nlocal,
+                          1.0,
+                          platform->app->bc->o_usrwrk,
+                          0.0,
+                          o_vertical_force);
+}
+
+void properties(double time)
+{
+  platform->linAlg->fill(nrs->meshV->Nlocal,
+                          sqrt(Pr / Ra),
+                          nrs->fluid->o_mue);
+  platform->linAlg->fill(nrs->meshV->Nlocal, 1.0, nrs->fluid->o_rho);
+}
+
+void UDF_Setup()
+{
+  nrs->userSource = &buoyancy;
+  nrs->userProperties = &properties;
+
+  if (platform->options.getArgs("RESTART FILE NAME").empty())
+    platform->linAlg->fill(nrs->fluid->fieldOffsetSum,
+                            0.0,
+                            nrs->fluid->o_U);
+}
+
+void UDF_ExecuteStep(double time, int tstep)
+{
+}
