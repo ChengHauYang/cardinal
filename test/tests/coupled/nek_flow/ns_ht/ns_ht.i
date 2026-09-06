@@ -1,3 +1,8 @@
+# Run from this directory:
+#   source ../../../../../cardinal_env.sh
+#   mpiexec -n 2 ../../../../../cardinal-opt -i ns_ht.i
+# Exodus outputs: ns_ht_out.e (MOOSE) and ns_ht_out_nek0.e (NekRS mirror mesh).
+
 Ra = 1.7e5
 Pr = 0.7
 kappa = '${fparse 1.0 / sqrt(Ra * Pr)}'
@@ -99,7 +104,7 @@ kappa = '${fparse 1.0 / sqrt(Ra * Pr)}'
   [nek]
     type = TransientMultiApp
     app_type = CardinalApp
-    input_files = nek.i
+    input_files = ns_ht_nek.i
     execute_on = timestep_begin
   []
 []

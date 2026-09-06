@@ -1,7 +1,7 @@
 [Tests]
   [ns_pnp]
     type = RunApp
-    input = main.i
+    input = ns_pnp.i
     capabilities = 'nekrs'
     min_parallel = 2
     max_parallel = 2

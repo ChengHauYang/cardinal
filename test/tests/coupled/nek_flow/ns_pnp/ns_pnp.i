@@ -1,3 +1,8 @@
+# Run from this directory:
+#   source ../../../../../cardinal_env.sh
+#   mpiexec -n 2 ../../../../../cardinal-opt -i ns_pnp.i
+# Exodus outputs: ns_pnp_out.e (MOOSE) and ns_pnp_out_nek0.e (NekRS mirror mesh).
+
 lambda = 0.5
 zeta = -0.2
 permittivity = '${fparse 2 * lambda^2}'
@@ -191,7 +196,7 @@ charge_force = 1
   [nek]
     type = TransientMultiApp
     app_type = CardinalApp
-    input_files = nek.i
+    input_files = ns_pnp_nek.i
     execute_on = timestep_begin
   []
 []
